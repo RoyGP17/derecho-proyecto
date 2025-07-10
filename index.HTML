@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prisión Preventiva: Mapa Conceptual Interactivo (Art. 268 CPP Perú)</title>
+    <!-- Fuentes de Google: Poppins (para títulos) y Roboto (para texto) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Variables CSS para una gestión de colores y estilos más sencilla */
+        :root {
+            --bg-gradient-start: #2c3e50; /* Azul marino oscuro */
+            --bg-gradient-end: #1a2533;   /* Azul muy oscuro */
+            --card-bg: #ffffff; /* Blanco puro para tarjetas/secciones */
+            --text-dark: #2d3748; /* Gris oscuro para texto principal */
+            --header-footer-bg: #1a202c; /* Azul marino muy oscuro */
+            --accent-fumus: #3498db; /* Azul vibrante para Fumus */
+            --accent-prognosis: #f39c12; /* Naranja cálido para Prognosis */
+            --accent-periculum: #e74c3c; /* Rojo fuerte para Periculum */
+            --accent-general: #2ecc71; /* Verde para principios generales */
+            --button-primary: #8e44ad; /* Púrpura para botones principales */
+            --button-hover: #9b59b6;
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.12);
+            --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.25);
+            --border-radius-card: 20px;
+            --border-radius-button: 12px;
+            --transition-speed: 0.6s ease-in-out;
+            --fade-transition-speed: 0.4s ease-out;
+        }
+
+        /* Estilos base del cuerpo */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-dark);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            scroll-behavior: smooth; /* Desplazamiento suave */
+        }
+
+        /* Encabezado fijo */
+        .header-bar {
+            background-color: var(--header-footer-bg);
+            padding: 25px 30px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-bar h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.3em;
+            color: var(--card-bg);
+            margin: 0;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Contenedor principal para las pantallas */
+        .main-content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            position: relative; /* Para la animación de tarjetas */
+        }
+
+        /* Estilo general de las "pantallas" o secciones */
+        .screen {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-card);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+            width: 100%;
+            max-width: 1200px; /* Aumentado para pantallas horizontales */
+            box-sizing: border-box;
+            text-align: center;
+            position: absolute; /* Para superponer y animar */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centrar la tarjeta */
+            opacity: 0;
+            pointer-events: none; /* No interactuable cuando oculto */
+            transition: opacity var(--fade-transition-speed), transform var(--transition-speed);
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto; /* Interactuable cuando activo */
+            transform: translate(-50%, -50%) scale(1);
+            z-index: 10;
+        }
+
+        .screen.exit-left {
+            transform: translate(-150%, -50%) scale(0.9);
+            opacity: 0;
+        }
+
+        .screen.exit-right {
+            transform: translate(50%, -50%) scale(0.9);
+            opacity: 0;
+        }
+
+        /* Títulos de pantalla */
+        .screen h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.6em; /* Ligeramente más grande */
+            color: var(--text-dark);
+            margin-bottom: 15px; /* Ajustado para el subtítulo */
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--accent-blue);
+        }
+        .screen .subtitle {
+            font-size: 1.4em; /* Ligeramente más grande */
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 35px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .screen .subtitle i {
+            font-size: 1.3em;
+            color: var(--accent-red); /* Color para iconos de alerta */
+        }
+
+
+        /* Pantalla de Bienvenida (Portada) */
+        #welcome-screen {
+            background: linear-gradient(45deg, #1a202c, #3182ce); /* Degradado más atractivo */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh; /* Ocupa más altura */
+            padding: 60px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            /* Add a subtle background animation */
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #welcome-screen h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 5.8em; /* Even larger */
+            color: white;
+            margin-bottom: 35px;
+            letter-spacing: 3px;
+            animation: fadeInScale 1.5s ease-out;
+        }
+
+        #welcome-screen p {
+            font-size: 1.9em; /* Even larger */
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 70px;
+            max-width: 900px; /* Wider text */
+            line-height: 1.6;
+            animation: fadeIn 2s ease-out;
+        }
+
+        #welcome-screen .nav-button {
+            background-color: var(--button-primary); /* Púrpura */
+            padding: 22px 55px; /* Larger button */
+            font-size: 1.7em; /* Larger font */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            animation: pulse 1.5s infinite alternate; /* Pulsing effect */
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); }
+            to { transform: scale(1.05); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        }
+
+
+        /* Pantalla de Presupuestos Generales */
+        #general-presuppositions .text-explanation {
+            font-size: 1.2em; /* Ligeramente más grande */
+            margin-bottom: 35px;
+            color: var(--text-dark);
+        }
+        #general-presuppositions .principle-detail-container {
+            display: grid; /* Usar grid para mejor control horizontal */
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* 2 o 3 columnas, se ajusta */
+            gap: 30px; /* Más espacio */
+            margin-top: 30px;
+        }
+
+        /* Bloque individual de principio (Accordion) */
+        #general-presuppositions details {
+            background-color: #e8f5e9; /* Verde muy claro */
+            padding: 0; /* Padding se maneja dentro de summary/content */
+            border-radius: var(--border-radius-button);
+            box-shadow: var(--shadow-light);
+            text-align: left;
+            border: 1px solid var(--accent-general);
+            transition: all 0.3s ease;
+            overflow: hidden; /* Para que el contenido oculto no se vea */
+        }
+        #general-presuppositions details[open] {
+            background-color: #dcf8e0; /* Un poco más oscuro cuando está abierto */
+            box-shadow: var(--shadow-medium);
+        }
+        #general-presuppositions summary {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4em; /* Ligeramente más grande */
+            font-weight: 600;
+            color: var(--accent-general);
+            padding: 22px 30px; /* Más padding */
+            cursor: pointer;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Más espacio para el icono */
+            border-bottom: 2px solid transparent; /* Para la transición del borde */
+            transition: all 0.3s ease;
+        }
+        #general-presuppositions details[open] summary {
+            border-bottom-color: var(--accent-general);
+            color: var(--text-dark); /* Cambia el color del texto del título al abrir */
+        }
+        #general-presuppositions summary:hover {
+            background-color: #e0ffe5; /* Fondo más claro al pasar el ratón */
+        }
+        #general-presuppositions summary i {
+            font-size: 1.6em; /* Más grande */
+            color: var(--accent-general);
+            transition: transform 0.3s ease;
+        }
+        #general-presuppositions details[open] summary i {
+            transform: rotate(90deg); /* Gira el ícono cuando está abierto */
+        }
+        #general-presuppositions .details-content {
+            padding: 18px 30px 30px 30px; /* Más padding */
+            font-size: 1.05em; /* Ligeramente más grande */
+            line-height: 1.7;
+            color: var(--text-dark);
+        }
+        #general-presuppositions .details-content p {
+            margin-bottom: 12px;
+        }
+        #general-presuppositions .details-content ul {
+            list-style-type: disc;
+            padding-left: 25px; /* Más padding */
+            margin-top: 15px;
+            font-size: 1em;
+        }
+        #general-presuppositions .details-content ul li {
+            margin-bottom: 6px;
+        }
+        #general-presuppositions .details-content ul li i {
+            color: var(--accent-red); /* Íconos de riesgo en rojo */
+        }
+
+
+        /* Estilo para Nodos de Mapa Conceptual (Fumus y Prognosis) */
+        .concept-map {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px; /* Más espacio */
+            margin-top: 30px;
+        }
+        .concept-node {
+            background-color: var(--accent-fumus);
+            color: white;
+            padding: 25px 40px; /* Más padding */
+            border-radius: var(--border-radius-button);
+            font-weight: 500;
+            font-size: 1.2em; /* Ligeramente más grande */
+            box-shadow: var(--shadow-light);
+            min-width: 280px; /* Asegura un tamaño mínimo */
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .concept-node:hover {
+            transform: translateY(-7px);
+            background-color: #2980b9;
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Estilo para Casillas de Jurisprudencia */
+        .jurisprudence-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px; /* Más espacio */
+            margin-top: 45px;
+        }
+        .jurisprudence-box {
+            background-color: #e0f2f7; /* Azul muy claro */
+            color: var(--text-dark);
+            padding: 22px 32px; /* Más padding */
+            border-radius: var(--border-radius-button);
+            box-shadow: var(--shadow-light);
+            font-size: 1.05em; /* Ligeramente más grande */
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--accent-fumus);
+        }
+        .jurisprudence-box:hover {
+            background-color: #cce9f5;
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        .jurisprudence-box .tooltip {
+            visibility: hidden;
+            width: 350px; /* Más ancho para contenido */
+            background-color: var(--header-footer-bg);
+            color: #fff;
+            text-align: left;
+            border-radius: 10px;
+            padding: 20px; /* Más padding */
+            position: absolute;
+            z-index: 100;
+            bottom: 120%; /* Posiciona el tooltip encima de la caja */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 1em; /* Ligeramente más grande */
+            line-height: 1.6;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .jurisprudence-box:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .jurisprudence-box .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -10px; /* Ajuste para el triángulo */
+            border-width: 10px;
+            border-style: solid;
+            border-color: var(--header-footer-bg) transparent transparent transparent;
+        }
+
+        /* Prognosis de Pena */
+        #prognosis-screen .prognosis-map {
+            display: flex;
+            flex-direction: column; /* Columna principal */
+            align-items: center;
+            gap: 30px; /* Más espacio */
+            margin-top: 30px;
+        }
+        #prognosis-screen .prognosis-node {
+            background-color: var(--accent-prognosis);
+            color: white;
+            padding: 25px 40px; /* Más padding */
+            border-radius: var(--border-radius-button);
+            font-weight: 500;
+            font-size: 1.25em; /* Ligeramente más grande */
+            box-shadow: var(--shadow-light);
+            width: fit-content; /* Ajustar al contenido */
+            max-width: 90%; /* Limitar ancho */
+            text-align: center;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        #prognosis-screen .prognosis-node:hover {
+            transform: translateY(-7px);
+            background-color: #e09411;
+            box-shadow: var(--shadow-medium);
+        }
+        #prognosis-screen .prognosis-node.main-node {
+            background-color: var(--accent-prognosis);
+            font-size: 1.4em; /* Más grande */
+            padding: 28px 45px;
+        }
+        #prognosis-screen .prognosis-sub-nodes {
+            display: flex; /* Para poner los sub-nodos en fila */
+            justify-content: center;
+            gap: 20px; /* Espacio entre sub-nodos */
+            flex-wrap: wrap; /* Para que se envuelvan en pantallas pequeñas */
+            margin-top: 20px; /* Espacio entre el nodo principal y los sub-nodos */
+        }
+        #prognosis-screen .prognosis-node.sub-node {
+            background-color: #f7b950; /* Tono más claro */
+            color: var(--text-dark);
+            font-size: 1.15em; /* Ligeramente más grande */
+            padding: 20px 35px;
+            min-width: 250px; /* Asegura que no se hagan muy pequeños */
+        }
+        #prognosis-screen .prognosis-node.sub-node:hover {
+            background-color: #f7a620;
+        }
+
+
+        #prognosis-screen .tooltip-prognosis {
+            background-color: #fce8e8; /* Rojo muy claro */
+            color: var(--accent-red);
+            padding: 20px 30px; /* Más padding */
+            border-radius: var(--border-radius-button);
+            font-size: 1.05em; /* Ligeramente más grande */
+            font-weight: 500;
+            cursor: help;
+            display: inline-block;
+            margin-top: 45px; /* Más margen para separarlo del mapa */
+            position: relative;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--accent-red);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #prognosis-screen .tooltip-prognosis:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        #prognosis-screen .tooltip-prognosis .tooltip-text {
+            visibility: hidden;
+            width: 380px; /* Más ancho */
+            background-color: var(--accent-red);
+            color: #fff;
+            text-align: left;
+            border-radius: 10px;
+            padding: 20px; /* Más padding */
+            position: absolute;
+            z-index: 100;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 1em; /* Ligeramente más grande */
+            line-height: 1.6;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        #prognosis-screen .tooltip-prognosis:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        #prognosis-screen .tooltip-prognosis .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -10px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: var(--accent-red) transparent transparent transparent;
+        }
+
+
+        /* Periculum in Mora */
+        .periculum-blocks {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Centrar las tarjetas */
+            gap: 35px; /* Más espacio */
+            margin-top: 35px;
+        }
+        .periculum-block {
+            flex: 1;
+            min-width: 320px; /* Ligeramente más ancho */
+            background-color: #fff;
+            border-radius: var(--border-radius-button);
+            padding: 30px; /* Más padding */
+            box-shadow: var(--shadow-light);
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .periculum-block:hover {
+            transform: translateY(-7px);
+            box-shadow: var(--shadow-medium);
+        }
+        .periculum-block.fuga {
+            border-top: 6px solid var(--accent-red);
+            background-color: #ffebeb; /* Rojo muy claro */
+        }
+        .periculum-block.obstaculizacion {
+            border-top: 6px solid var(--accent-orange);
+            background-color: #fffaf0; /* Naranja muy claro */
+        }
+        .periculum-block h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5em; /* Ligeramente más grande */
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Más espacio */
+        }
+        .periculum-block.fuga h3 { color: var(--accent-red); }
+        .periculum-block.obstaculizacion h3 { color: var(--accent-orange); }
+        .periculum-block p {
+            font-size: 1.1em; /* Ligeramente más grande */
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        .periculum-block ul {
+            padding-left: 30px; /* Más padding */
+            list-style-type: disc;
+            margin-bottom: 18px;
+        }
+        .periculum-block li {
+            margin-bottom: 8px;
+        }
+        .periculum-block .case-ref {
+            font-size: 1em; /* Ligeramente más grande */
+            font-weight: 500;
+            color: #555;
+            background-color: #e2e8f0;
+            padding: 12px 18px; /* Más padding */
+            border-radius: 8px;
+            display: inline-block;
+            border: 1px solid #cbd5e0;
+        }
+
+
+        /* Pantalla Final (Mapa Resumen) */
+        #summary-screen .diagram-container {
+            width: 100%;
+            max-width: 800px; /* Más ancho */
+            margin: 40px auto 50px auto; /* Más margen */
+            position: relative;
+            padding-bottom: 50%; /* Aspect ratio 2:1 */
+            background-color: #e6f0f7;
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-light);
+            border: 2px dashed var(--accent-blue);
+            overflow: hidden;
+        }
+
+        .diagram-node {
+            position: absolute;
+            background-color: var(--accent-blue);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4em; /* Ligeramente más grande */
+            font-weight: 600;
+            padding: 18px 28px; /* Más padding */
+            border-radius: var(--border-radius-button);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .diagram-node:nth-child(1) { top: 10%; left: 50%; transform: translateX(-50%); background-color: var(--accent-fumus); }
+        .diagram-node:nth-child(2) { top: 50%; left: 10%; transform: translateY(-50%); background-color: var(--accent-prognosis); }
+        .diagram-node:nth-child(3) { top: 50%; right: 10%; transform: translateY(-50%); background-color: var(--accent-periculum); }
+        .diagram-node:nth-child(4) { bottom: 10%; left: 50%; transform: translateX(-50%); background-color: var(--accent-general); font-size: 1em; padding: 10px 20px;} /* Principios Generales */
+
+        .diagram-arrow {
+            position: absolute;
+            background-color: #a0aec0; /* Gris para las líneas */
+            height: 3px;
+            border-radius: 2px;
+            z-index: 1;
+        }
+        .diagram-arrow.arrow1 { top: 25%; left: 35%; width: 20%; transform: rotate(45deg); transform-origin: left center; }
+        .diagram-arrow.arrow2 { top: 25%; right: 35%; width: 20%; transform: rotate(-45deg); transform-origin: right center; }
+        .diagram-arrow.arrow3 { top: 40%; left: 25%; width: 50%; transform: rotate(0deg); } /* Horizontal */
+        .diagram-arrow.arrow4 { top: 75%; left: 35%; width: 20%; transform: rotate(-45deg); transform-origin: left center; }
+        .diagram-arrow.arrow5 { top: 75%; right: 35%; width: 20%; transform: rotate(45deg); transform-origin: right center; }
+
+
+        #summary-screen .call-to-action {
+            font-size: 1.3em; /* Ligeramente más grande */
+            margin-bottom: 35px;
+            color: var(--text-dark);
+        }
+        #summary-screen .final-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px; /* Más espacio */
+            flex-wrap: wrap;
+        }
+        #summary-screen .final-buttons .nav-button {
+            background-color: var(--accent-general);
+        }
+        #summary-screen .final-buttons .nav-button:hover:not(:disabled) {
+            background-color: #2f855a;
+        }
+
+        /* --- Estilos para las pantallas de Análisis de Caso --- */
+        .case-analysis-section h2 {
+            color: #4a5568; /* Un gris oscuro para el título del caso */
+            border-bottom-color: #4a5568;
+        }
+        .case-analysis-section .case-details {
+            background-color: #f7fafc;
+            border-radius: var(--border-radius-button);
+            padding: 25px 35px; /* Más padding */
+            margin-bottom: 35px;
+            text-align: left;
+            box-shadow: var(--shadow-light);
+            border: 1px solid #e2e8f0;
+        }
+        .case-analysis-section .case-details p {
+            margin: 10px 0;
+            font-size: 1.15em; /* Ligeramente más grande */
+            color: var(--text-dark);
+        }
+        .case-analysis-section .case-details strong {
+            color: var(--header-footer-bg);
+        }
+
+        /* Estilo para los bloques de análisis de presupuestos (Fumus, Prognosis, Periculum) */
+        .analysis-detail-block {
+            margin-bottom: 30px; /* Más espacio */
+            text-align: left;
+        }
+        .analysis-detail-block h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.7em; /* Ligeramente más grande */
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        .analysis-detail-block.fumus h3 { color: var(--accent-fumus); border-color: var(--accent-fumus); }
+        .analysis-detail-block.prognosis h3 { color: var(--accent-prognosis); border-color: var(--accent-prognosis); }
+        .analysis-detail-block.periculum h3 { color: var(--accent-periculum); border-color: var(--accent-periculum); }
+        .analysis-detail-block.conclusion h3 { color: var(--accent-general); border-color: var(--accent-general); }
+
+
+        .analysis-detail-block p {
+            font-size: 1.1em; /* Ligeramente más grande */
+            margin-bottom: 12px;
+        }
+        .analysis-detail-block ul {
+            list-style-type: disc;
+            padding-left: 30px; /* Más padding */
+            margin-bottom: 18px;
+        }
+        .analysis-detail-block ul li {
+            margin-bottom: 6px;
+        }
+        .analysis-detail-block .conclusion-text {
+            background-color: #f0f4f7;
+            border-left: 5px solid #a0aec0;
+            padding: 18px 25px; /* Más padding */
+            border-radius: 8px;
+            font-style: italic;
+            font-weight: 500;
+            color: #4a5568;
+            margin-top: 25px;
+        }
+
+        /* Estilo para el acordeón (details/summary) dentro de las pantallas de análisis */
+        .analysis-detail-block details {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius-button);
+            margin-bottom: 20px; /* Más espacio */
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        .analysis-detail-block details[open] {
+            background-color: #ebf8ff; /* Fondo más claro cuando está abierto */
+            border-color: var(--accent-fumus);
+            box-shadow: var(--shadow-medium);
+        }
+        .analysis-detail-block summary {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3em; /* Ligeramente más grande */
+            font-weight: 600;
+            padding: 20px 30px; /* Más padding */
+            cursor: pointer;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+            transition: color 0.2s ease;
+        }
+        .analysis-detail-block summary:hover {
+            color: var(--button-primary);
+        }
+        .analysis-detail-block summary i {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+        .analysis-detail-block details[open] summary i {
+            transform: rotate(90deg); /* Gira el ícono cuando está abierto */
+        }
+        .analysis-detail-block .details-content {
+            padding: 0 30px 30px 30px; /* Más padding */
+            font-size: 1.05em; /* Ligeramente más grande */
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+        .analysis-detail-block .details-content ul {
+            padding-left: 25px;
+            list-style-type: disc;
+            margin-top: 15px;
+        }
+        .analysis-detail-block .details-content ul li {
+            margin-bottom: 5px;
+        }
+
+        .legal-framework-section {
+            margin-top: 35px;
+        }
+        .legal-framework-section h3 {
+            color: #4a5568;
+            border-bottom-color: #4a5568;
+            font-size: 1.6em; /* Ligeramente más grande */
+            margin-top: 35px;
+        }
+        .legal-framework-section ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .legal-framework-section ul li {
+            background-color: #edf2f7;
+            padding: 12px 18px; /* Más padding */
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1em; /* Ligeramente más grande */
+            color: #4a5568;
+        }
+        .legal-framework-section ul li i {
+            color: var(--accent-blue);
+        }
+
+        .final-conclusion-block {
+            background-color: var(--accent-general);
+            color: white;
+            padding: 30px 35px; /* Más padding */
+            border-radius: var(--border-radius-card);
+            margin-top: 45px;
+            box-shadow: var(--shadow-medium);
+            text-align: center;
+        }
+        .final-conclusion-block h3 {
+            color: white;
+            font-size: 1.9em; /* Ligeramente más grande */
+            margin-bottom: 18px;
+            border-bottom: 2px solid rgba(255,255,255,0.5);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .final-conclusion-block p {
+            font-size: 1.2em; /* Ligeramente más grande */
+            line-height: 1.6;
+            color: white;
+            opacity: 0.9;
+        }
+        .final-conclusion-block .duration {
+            font-size: 1.4em; /* Ligeramente más grande */
+            font-weight: 700;
+            color: #ffeb3b; /* Amarillo brillante */
+            margin-top: 18px;
+        }
+
+
+        /* Navegación y botones generales */
+        .navigation-buttons-container {
+            width: 100%;
+            max-width: 1200px; /* Alinear con el ancho de las tarjetas */
+            margin: 0 auto;
+            padding: 25px 20px; /* Más padding */
+            display: flex;
+            justify-content: space-between;
+            gap: 20px; /* Más espacio */
+            box-sizing: border-box;
+            position: relative; /* Añadido para z-index */
+            z-index: 1001; /* Asegura que esté por encima de todo */
+        }
+
+        .nav-button {
+            background-color: var(--button-primary);
+            color: var(--card-bg);
+            padding: 18px 40px; /* Más padding */
+            border: none;
+            border-radius: var(--border-radius-button);
+            font-size: 1.2em; /* Ligeramente más grande */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+            flex-shrink: 0;
+            min-width: 180px; /* Ligeramente más ancho */
+            display: inline-flex; /* Asegura que se muestre como flex cuando es visible */
+            align-items: center;
+            justify-content: center;
+            gap: 12px; /* Más espacio para el icono */
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background-color: var(--button-hover);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-button:disabled {
+            background-color: #cbd5e0;
+            color: #718096;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Pie de página */
+        .footer {
+            margin-top: auto;
+            padding: 30px 20px; /* Más padding */
+            background-color: var(--header-footer-bg);
+            color: var(--card-bg);
+            text-align: center;
+            font-size: 1em; /* Ligeramente más grande */
+            width: 100%;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .screen {
+                max-width: 90%; /* Ajuste para tablets */
+            }
+            #general-presuppositions .principle-detail-container {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Más flexible */
+            }
+            #prognosis-screen .prognosis-sub-nodes {
+                flex-direction: column; /* Apilar en tablets si el espacio es limitado */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-bar h1 {
+                font-size: 1.8em;
+                padding: 15px;
+            }
+            .main-content-wrapper {
+                padding: 20px 15px;
+            }
+            .screen {
+                padding: 25px;
+                top: 20px; /* Ajuste para móviles, para que no quede tan centrado verticalmente */
+                transform: translate(-50%, 0); /* Centrar solo horizontalmente */
+            }
+            .screen.exit-left, .screen.exit-right {
+                transform: translate(-150%, 0) scale(0.9); /* Ajuste de animación */
+            }
+            .screen.exit-right {
+                transform: translate(50%, 0) scale(0.9);
+            }
+            .screen.active {
+                transform: translate(-50%, 0) scale(1);
+            }
+            .screen h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px; /* Ajustado para subtítulo */
+            }
+            .screen .subtitle {
+                font-size: 1.1em;
+                margin-bottom: 20px;
+            }
+            #welcome-screen {
+                padding: 40px 20px;
+                min-height: 60vh;
+            }
+            #welcome-screen h1 {
+                font-size: 2.8em;
+            }
+            #welcome-screen p {
+                font-size: 1.2em;
+            }
+            #welcome-screen .nav-button {
+                font-size: 1.2em;
+                padding: 15px 30px;
+            }
+            #general-presuppositions .principle-detail-container {
+                flex-direction: column; /* Apilar en móviles */
+                gap: 20px;
+            }
+            #general-presuppositions details {
+                max-width: 100%; /* Ocupar todo el ancho disponible */
+                min-width: unset;
+            }
+            #general-presuppositions summary {
+                font-size: 1.1em;
+                padding: 15px 20px;
+            }
+            #general-presuppositions .details-content {
+                padding: 10px 20px 20px 20px;
+            }
+            #general-presuppositions .details-content p,
+            #general-presuppositions .details-content ul li {
+                font-size: 0.95em;
+            }
+            .concept-map {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .concept-node {
+                min-width: unset;
+                width: 100%;
+                font-size: 1em;
+                padding: 18px 25px;
+            }
+            .jurisprudence-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .jurisprudence-box {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 15px 20px;
+            }
+            .jurisprudence-box .tooltip {
+                width: 90%;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: auto; /* Desactiva bottom */
+                top: 105%; /* Posiciona debajo en móviles */
+            }
+            .jurisprudence-box .tooltip::after {
+                top: -8px; /* Triángulo hacia arriba */
+                border-color: transparent transparent var(--header-footer-bg) transparent;
+            }
+            #prognosis-screen .prognosis-map {
+                flex-direction: column;
+                gap: 15px;
+            }
+            #prognosis-screen .prognosis-node {
+                max-width: 100%;
+                font-size: 1em;
+                padding: 18px 25px;
+            }
+            #prognosis-screen .prognosis-node.main-node {
+                font-size: 1.1em;
+                padding: 20px 30px;
+            }
+            #prognosis-screen .prognosis-node.sub-node {
+                font-size: 1em;
+                padding: 15px 25px;
+            }
+            #prognosis-screen .tooltip-prognosis {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+            #prognosis-screen .tooltip-prognosis .tooltip-text {
+                width: 90%;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: auto;
+                top: 105%;
+            }
+            #prognosis-screen .tooltip-prognosis .tooltip-text::after {
+                top: -8px;
+                border-color: transparent transparent var(--accent-red) transparent;
+            }
+            .periculum-blocks {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .periculum-block {
+                min-width: unset;
+                width: 100%;
+                padding: 20px;
+            }
+            .periculum-block h3 {
+                font-size: 1.25em;
+            }
+            .periculum-block p, .periculum-block ul, .periculum-block li {
+                font-size: 0.95em;
+            }
+            .periculum-block .case-ref {
+                font-size: 0.85em;
+                padding: 6px 10px;
+            }
+            .navigation-buttons-container {
+                flex-direction: column;
+                padding: 0 15px;
+            }
+            .nav-button {
+                min-width: unset;
+                width: 100%;
+                font-size: 1em;
+                padding: 12px 20px;
+            }
+            #summary-screen .diagram-container {
+                height: 250px; /* Ajuste de altura para móviles */
+                padding-bottom: 40%; /* Ajuste de aspecto */
+            }
+            .diagram-node {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+            .diagram-node:nth-child(1) { top: 5%; }
+            .diagram-node:nth-child(2) { top: 40%; left: 5%; }
+            .diagram-node:nth-child(3) { top: 40%; right: 5%; }
+            .diagram-node:nth-child(4) { bottom: 5%; left: 50%; transform: translateX(-50%);}
+
+            .diagram-arrow.arrow1 { top: 15%; left: 30%; width: 15%; transform: rotate(45deg); }
+            .diagram-arrow.arrow2 { top: 15%; right: 30%; width: 15%; transform: rotate(-45deg); }
+            .diagram-arrow.arrow3 { top: 35%; left: 20%; width: 60%; transform: rotate(0deg); }
+            .diagram-arrow.arrow4 { top: 65%; left: 30%; width: 15%; transform: rotate(-45deg); }
+            .diagram-arrow.arrow5 { top: 65%; right: 30%; width: 15%; transform: rotate(45deg); }
+
+            #summary-screen .call-to-action {
+                font-size: 1.1em;
+            }
+            #summary-screen .final-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            /* Case Analysis Screen Responsive */
+            .case-analysis-section .case-details {
+                padding: 15px 20px;
+            }
+            .case-analysis-section .case-details p {
+                font-size: 1em;
+            }
+            .analysis-detail-block h3 {
+                font-size: 1.4em;
+            }
+            .analysis-detail-block p,
+            .analysis-detail-block ul li {
+                font-size: 0.95em;
+            }
+            .analysis-detail-block summary {
+                font-size: 1.1em;
+                padding: 15px 20px;
+            }
+            .analysis-detail-block .details-content {
+                padding: 0 20px 20px 20px;
+            }
+            .legal-framework-section h3 {
+                font-size: 1.3em;
+            }
+            .legal-framework-section ul li {
+                font-size: 0.9em;
+            }
+            .final-conclusion-block h3 {
+                font-size: 1.6em;
+            }
+            .final-conclusion-block p {
+                font-size: 1.05em;
+            }
+            .final-conclusion-block .duration {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-bar h1 {
+                font-size: 1.3em;
+            }
+            .screen h2 {
+                font-size: 1.6em;
+            }
+            #welcome-screen h1 {
+                font-size: 2em;
+            }
+            #welcome-screen p {
+                font-size: 1em;
+            }
+            .nav-button {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-bar">
+        <h1>Prisión Preventiva: Análisis del Art. 268 CPP Perú</h1>
+    </header>
+
+    <main class="main-content-wrapper">
+        <!-- PANTALLA 1: Inicio (Portada) -->
+        <section id="welcome-screen" class="screen active">
+            <h1>📘 Prisión Preventiva: Mapa Conceptual Interactivo</h1>
+            <p>Explora de forma dinámica los requisitos legales esenciales que justifican esta medida cautelar excepcional en el Código Procesal Penal del Perú.</p>
+            <button class="nav-button" id="startButton">Comenzar <i class="fas fa-play-circle"></i></button>
+        </section>
+
+        <!-- PANTALLA 2: Presupuestos Generales -->
+        <section id="general-presuppositions" class="screen">
+            <h2>🧱 1. Presupuestos materiales (Art. 268 NCPP)</h2>
+            <p class="subtitle"><i class="fas fa-balance-scale"></i> Deben cumplirse de forma conjunta <i class="fas fa-exclamation-triangle"></i></p>
+            <p class="text-explanation">Para que la prisión preventiva sea constitucionalmente válida, estos presupuestos deben cumplirse de forma **conjunta y concurrente**. Son requisitos de naturaleza legal, procesal y sustantiva que limitan la aplicación de esta medida excepcional.</p>
+
+            <div class="principle-detail-container">
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 1. Legalidad procesal (Art. 253.1 NCPP)</summary>
+                    <div class="details-content">
+                        <p>Definición: Solo pueden imponerse dentro de un proceso penal, si la ley expresamente lo permite, y siempre bajo las garantías procesales previstas por el ordenamiento jurídico.</p>
+                        <p>Implica:</p>
+                        <ul>
+                            <li>Existencia de un proceso penal en curso.</li>
+                            <li>Fundamento legal expreso que habilite la medida.</li>
+                            <li>Respeto al debido proceso y demás garantías constitucionales.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 2. Necesidad o indispensableidad (Art. 253.2 NCPP)</summary>
+                    <div class="details-content">
+                        <p>Definición: La restricción de un derecho fundamental solo se justifica cuando sea indispensable para fines procesales, y solo en la medida y por el tiempo estrictamente necesario.</p>
+                        <p>Finalidad específica: Prevenir riesgos tales como:</p>
+                        <ul>
+                            <li><i class="fas fa-running"></i> Fuga del imputado</li>
+                            <li><i class="fas fa-eye-slash"></i> Ocultamiento de bienes</li>
+                            <li><i class="fas fa-dollar-sign"></i> Insolvencia sobrevenida</li>
+                            <li><i class="fas fa-block"></i> Obstaculización de la investigación</li>
+                            <li><i class="fas fa-redo-alt"></i> Reiteración delictiva</li>
+                        </ul>
+                    </div>
+                </details>
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 3. Fines Cautelares (Art. 253.3 NCPP)</summary>
+                    <div class="details-content">
+                        <p>Definición: La medida coercitiva debe tener una finalidad preventiva, no punitiva.</p>
+                        <p>Objetivo esencial: Asegurar el desarrollo y resultado del proceso penal, nunca sustituir una pena anticipada.</p>
+                        <p>Alcance temporal: Solo debe durar lo necesario para conjurar el riesgo identificado.</p>
+                    </div>
+                </details>
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 4. Proporcionalidad (Art. 253.2 NCPP)</summary>
+                    <div class="details-content">
+                        <p>Definición: Toda medida de coerción debe guardar proporción con la gravedad del hecho, el grado de afectación al derecho restringido, y la intensidad del riesgo procesal.</p>
+                        <p>Condición adicional: Debe existir una base probatoria suficiente (“elementos de convicción”) que justifique la imposición de la medida.</p>
+                    </div>
+                </details>
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 5. Jurisdiccionalidad y motivación (Art. 254 NCPP)</summary>
+                    <div class="details-content">
+                        <p>Definición: La imposición de una medida coercitiva requiere siempre una resolución judicial especialmente motivada, emitida por el juez competente.</p>
+                        <p>Condición procesal: Solo puede dictarse a solicitud del sujeto procesal legitimado, es decir, principalmente el Ministerio Público.</p>
+                        <p>Obligación del juez: Analizar cada caso individualmente y motivar en forma expresa las razones legales, fácticas y probatorias que justifican la medida.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- PANTALLA 3: Fumus Comissi Delicti -->
+        <section id="fumus-delicti-screen" class="screen">
+            <h2>🔵 1.1 FUMUS COMISSI DELICTI</h2>
+            <p class="subtitle">Sospecha fuerte y fundada del delito</p>
+            <div class="concept-map">
+                <div class="concept-node">Indicios graves y fundados <br> (Elementos de convicción sólidos)</div>
+                <div class="concept-node">Probabilidad preponderante <br> (Alta verosimilitud del hecho y autoría)</div>
+                <div class="concept-node">Valoración objetiva y subjetiva <br> (Análisis integral de los elementos)</div>
+            </div>
+            <p style="margin-top: 30px; font-style: italic; color: var(--text-dark); opacity: 0.8;">Definición clave: Indicios graves y fundados de que el imputado cometió un delito. No se exige certeza, sino sospecha fuerte o probabilidad preponderante.</p>
+
+            <div class="jurisprudence-container">
+                <div class="jurisprudence-box">
+                    ⚖️ Cas. 564-2016 (Loreto)
+                    <span class="tooltip">
+                        **Análisis dual: sustantivo y procesal.** La gravedad de los indicios se refiere tanto a la entidad del hecho imputado como a la solidez de los elementos de convicción.
+                    </span>
+                </div>
+                <div class="jurisprudence-box">
+                    ⚖️ Cas. 724-2015 (Piura)
+                    <span class="tooltip">
+                        **Cargos deben ser concretos, no vagos.** Los indicios deben referirse a hechos específicos y no a meras especulaciones, permitiendo al imputado ejercer su derecho de defensa.
+                    </span>
+                </div>
+                <div class="jurisprudence-box">
+                    ⚖️ Cas. 704-2015 (Pasco)
+                    <span class="tooltip">
+                        **No se discute tipicidad penal en esta audiencia.** La audiencia de prisión preventiva no es el momento para debatir la calificación jurídica definitiva del delito, sino la existencia de indicios suficientes.
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANTALLA 4: Prognosis de Pena -->
+        <section id="prognosis-screen" class="screen">
+            <h2>🔵 1.2 PROGNOSIS DE PENA</h2>
+            <p class="subtitle">Probable pena superior a 5 años</p>
+            <div class="prognosis-map">
+                <div class="prognosis-node main-node">Condición: Pena probable mayor a 5 años de prisión</div>
+                <div class="prognosis-sub-nodes">
+                    <div class="prognosis-node sub-node">Evaluación judicial provisional</div>
+                    <div class="prognosis-node sub-node">Considerar gravedad y características del hecho</div>
+                    <div class="prognosis-node sub-node">Circunstancias personales del imputado</div>
+                </div>
+            </div>
+            <div class="tooltip-prognosis">
+                ⚖️ Cas. 626-2013 (Moquegua)
+                <span class="tooltip-text">
+                    **Exige motivación reforzada y análisis cualitativo de pena.** La prognosis no es solo un cálculo matemático, sino un juicio valorativo que considera la pena abstracta, las agravantes, atenuantes y la posible aplicación de beneficios penitenciarios.
+                </span>
+            </div>
+        </section>
+
+        <!-- PANTALLA 5: Periculum in Mora -->
+        <section id="periculum-screen" class="screen">
+            <h2>🔵 1.3 PERICULUM IN MORA</h2>
+            <p class="subtitle">Peligro procesal real y específico</p>
+            <p style="font-size: 1.15em; margin-bottom: 30px; font-style: italic; color: var(--text-dark); opacity: 0.8;">El riesgo de que el imputado eluda la acción de la justicia o interfiera con la investigación.</p>
+            <div class="periculum-blocks">
+                <div class="periculum-block fuga">
+                    <h3><i class="fas fa-running"></i> A. Peligro de Fuga</h3>
+                    <p>Imputado puede evitar la acción de la justicia. Criterios de valoración (numerus apertus):</p>
+                    <ul>
+                        <li>Arraigo domiciliario y familiar (falta de)</li>
+                        <li>Gravedad de la pena esperada</li>
+                        <li>Comportamiento procesal previa (desobediencia, rebeldía)</li>
+                        <li>Actitud ante el daño (reparación)</li>
+                        <li>Pertenencia a organización criminal</li>
+                    </ul>
+                    <span class="case-ref">⚖️ Casación 1445-2018 (Amazonas): Debe probarse un riesgo **concreto**, no suposiciones.</span>
+                </div>
+                <div class="periculum-block obstaculizacion">
+                    <h3><i class="fas fa-hand-stop"></i> B. Peligro de Obstaculización</h3>
+                    <p>Riesgo de dañar la búsqueda de la verdad. Manifestaciones:</p>
+                    <ul>
+                        <li>Ocultar, modificar, destruir pruebas</li>
+                        <li>Influenciar testigos o coimputados</li>
+                        <li>Inducir a terceros a interferir</li>
+                    </ul>
+                    <span class="case-ref">⚖️ Casación 1640-2019 (Arequipa): Basta con riesgo **efectivo**, no se requiere conducta activa.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANTALLA 6: Mapa Resumen Final -->
+        <section id="summary-screen" class="screen">
+            <h2>✨ Mapa Resumen: Los 3 Pilares de la Prisión Preventiva</h2>
+            <p class="subtitle">¿Listo para aplicar estos conceptos a un caso práctico?</p>
+            <div class="diagram-container">
+                <div class="diagram-node" style="top: 10%; left: 50%; transform: translateX(-50%); background-color: var(--accent-fumus);">FUMUS COMISSI DELICTI</div>
+                <div class="diagram-node" style="top: 50%; left: 10%; transform: translateY(-50%); background-color: var(--accent-prognosis);">PROGNOSIS DE PENA</div>
+                <div class="diagram-node" style="top: 50%; right: 10%; transform: translateY(-50%); background-color: var(--accent-periculum);">PERICULUM IN MORA</div>
+                <div class="diagram-node" style="bottom: 10%; left: 50%; transform: translateX(-50%); background-color: var(--accent-general); font-size: 1em; padding: 10px 20px;">PRINCIPIOS GENERALES</div>
+
+                <!-- Flechas (simuladas con divs) -->
+                <div class="diagram-arrow arrow1" style="top: 25%; left: 35%; width: 20%; transform: rotate(45deg); transform-origin: left center;"></div>
+                <div class="diagram-arrow arrow2" style="top: 25%; right: 35%; width: 20%; transform: rotate(-45deg); transform-origin: right center;"></div>
+                <div class="diagram-arrow arrow3" style="top: 50%; left: 30%; width: 40%; transform: rotate(0deg);"></div>
+                <div class="diagram-arrow arrow4" style="top: 75%; left: 35%; width: 20%; transform: rotate(-45deg); transform-origin: left center;"></div>
+                <div class="diagram-arrow arrow5" style="top: 75%; right: 35%; width: 20%; transform: rotate(45deg); transform-origin: right center;"></div>
+            </div>
+            <p class="call-to-action">¡Has explorado los tres presupuestos materiales clave de la prisión preventiva! Comprenderlos es fundamental para el debido proceso penal.</p>
+            <div class="final-buttons">
+                <button class="nav-button" id="goToCaseAnalysisBtn"><i class="fas fa-info-circle"></i> Ir a Análisis de Caso</button>
+            </div>
+        </section>
+
+        <!-- PANTALLA 7: Análisis del Caso: Datos Generales -->
+        <section id="case-analysis-data-screen" class="screen case-analysis-section">
+            <h2>⚖️ ANÁLISIS DEL CASO: DATOS GENERALES</h2>
+            <p class="subtitle">Aplicación de los presupuestos del Art. 268 NCPP</p>
+
+            <div class="case-details">
+                <p><strong>Imputado:</strong> M.Y.C.</p>
+                <p><strong>Delito imputado:</strong> Robo agravado</p>
+                <p><strong>Solicitante:</strong> Ministerio Público</p>
+                <p><strong>Duración solicitada:</strong> 9 meses de prisión preventiva</p>
+                <p><strong>Víctima:</strong> H.M.V.S.</p>
+            </div>
+        </section>
+
+        <!-- PANTALLA 8: Análisis del Caso: FUMUS COMISSI DELICTI -->
+        <section id="case-analysis-fumus-screen" class="screen case-analysis-section">
+            <h2>⚖️ ANÁLISIS DEL CASO: FUMUS COMISSI DELICTI</h2>
+            <p class="subtitle">Sospecha fuerte y fundada del delito</p>
+            <div class="analysis-detail-block fumus">
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 🧱 1. FUMUS COMISSI DELICTI</summary>
+                    <div class="details-content">
+                        <p>¿Existen graves y fundados elementos de convicción que vinculen al imputado con el delito? → <strong>SÍ</strong></p>
+                        <p>✅ <strong>Fundamentos del requerimiento:</strong></p>
+                        <ul>
+                            <li>El imputado fue intervenido en flagrancia el 10 de junio de 2023 en compañía de otro sujeto cuando huían tras sustraer un celular a la víctima.</li>
+                            <li>La víctima reconoció directamente a M.Y.C. como uno de los autores del robo (reconocimiento facial y verbal).</li>
+                            <li>El acto delictivo fue presenciado por un testigo directo, que incluso ayudó a reducir a los agresores.</li>
+                            <li>Se incautó el objeto robado (celular) entre las pertenencias del imputado.</li>
+                        </ul>
+                        <p class="conclusion-text">📌 Conclusión: Se cumple con creces el primer presupuesto. Hay indicios objetivos, testigos directos y recuperación del bien robado.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- PANTALLA 9: Análisis del Caso: PROGNOSIS DE PENA -->
+        <section id="case-analysis-prognosis-screen" class="screen case-analysis-section">
+            <h2>⚖️ ANÁLISIS DEL CASO: PROGNOSIS DE PENA</h2>
+            <p class="subtitle">Probable pena superior a 5 años</p>
+            <div class="analysis-detail-block prognosis">
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 🧱 2. PROGNOSIS DE PENA</summary>
+                    <div class="details-content">
+                        <p>¿La pena esperada supera los 5 años? → <strong>SÍ</strong></p>
+                        <p>✅ <strong>Tipificación y cálculo:</strong></p>
+                        <ul>
+                            <li>Se imputa robo agravado (Art. 188 y 189 incisos 2 y 3 del Código Penal).</li>
+                            <li>**Agravante adicional:** Comete el hecho delictivo haciendo uso de vehículo motorizado (Art. 189. Segundo párrafo, numeral 9).</li>
+                            <li>La pena mínima para el robo agravado, con estas circunstancias, es de 12 años y puede alcanzar los 20 años.</li>
+                            <li>No se justifica reducción de pena por circunstancias atenuantes, ni confesión sincera, ni colaboración eficaz.</li>
+                        </ul>
+                        <p class="conclusion-text">📌 Conclusión: La prognosis supera ampliamente los 5 años. Segundo presupuesto plenamente cumplido.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- PANTALLA 10: Análisis del Caso: PERICULUM IN MORA -->
+        <section id="case-analysis-periculum-screen" class="screen case-analysis-section">
+            <h2>⚖️ ANÁLISIS DEL CASO: PERICULUM IN MORA</h2>
+            <p class="subtitle">Peligro procesal real y específico</p>
+            <div class="analysis-detail-block periculum">
+                <details>
+                    <summary><i class="fas fa-chevron-right"></i> 🧱 3. PERICULUM IN MORA</summary>
+                    <div class="details-content">
+                        <p>¿Existe peligro procesal? (de fuga u obstaculización) → <strong>SÍ</strong></p>
+                        <p><strong>A. 🏃‍♂️ Peligro de fuga:</strong></p>
+                        <ul>
+                            <li>Sin arraigo laboral: no acredita empleo estable.</li>
+                            <li>Sin arraigo domiciliario sólido: vive en domicilio ajeno, sin contrato ni constancia legal.</li>
+                            <li>Gravedad de la pena: incentiva la fuga (pena probable ≥ 12 años).</li>
+                            <li>Conducta evasiva: huyó tras cometer el delito y fue reducido por civiles.</li>
+                        </ul>
+                        <p><strong>B. 🔧 Peligro de obstaculización:</strong></p>
+                        <ul>
+                            <li>Se menciona una investigación en curso respecto a un tercer partícipe no identificado.</li>
+                            <li>El imputado se negó a brindar información clara sobre su cómplice.</li>
+                            <li>Riesgo de coordinación para obstaculizar identificación del coimputado.</li>
+                        </ul>
+                        <p class="conclusion-text">📌 Conclusión: El peligro procesal está debidamente fundamentado y justificado en términos de fuga y obstaculización. Se satisface el tercer presupuesto.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- PANTALLA 11: Análisis del Caso: Marco Jurídico y Conclusión Final -->
+        <section id="case-analysis-conclusion-screen" class="screen case-analysis-section">
+            <h2>⚖️ ANÁLISIS DEL CASO: MARCO JURÍDICO Y CONCLUSIÓN FINAL</h2>
+            <p class="subtitle">Resumen y decisión final</p>
+
+            <div class="legal-framework-section">
+                <h3>📜 MARCO JURÍDICO APLICADO</h3>
+                <ul>
+                    <li><i class="fas fa-book"></i> Art. 268 CPP: Requiere 3 presupuestos concurrentes: graves elementos, pena > 5 años y peligro procesal.</li>
+                    <li><i class="fas fa-landmark"></i> Casación 1445-2018: El peligro debe ser concreto y no una mera conjetura.</li>
+                    <li><i class="fas fa-landmark"></i> Casación 564-2016: El fumus se sustenta con indicios fundados (como flagrancia y reconocimiento).</li>
+                    <li><i class="fas fa-landmark"></i> Casación 626-2013: Debe motivarse cuidadosamente la prognosis de pena.</li>
+                </ul>
+            </div>
+
+            <div class="final-conclusion-block">
+                <h3>✅ CONCLUSIÓN FINAL</h3>
+                <p>✔️ Procede la prisión preventiva.</p>
+                <p>El requerimiento cumple con todos los presupuestos materiales exigidos por el art. 268 del NCPP. Hay:</p>
+                <ul>
+                    <li>Grave sospecha fundada de la comisión del delito</li>
+                    <li>Pena probable claramente superior a 5 años</li>
+                    <li>Riesgo real de fuga y obstaculización de la investigación</li>
+                </ul>
+                <p class="duration">🕘 Por tanto, es legítimo, proporcional y constitucional que el juez conceda la prisión preventiva por el plazo solicitado de 9 meses.</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="navigation-buttons-container">
+        <button class="nav-button" id="prevScreenBtn" style="display: none;"><i class="fas fa-chevron-left"></i> Anterior</button>
+        <button class="nav-button" id="nextScreenBtn" style="display: none;">Siguiente <i class="fas fa-chevron-right"></i></button>
+        <button class="nav-button" id="restartBtn" style="display: none;"><i class="fas fa-redo-alt"></i> Reiniciar</button>
+    </div>
+
+    <footer class="footer">
+        Desarrollado con fines educativos por Renzo Vidal Robles Orosco – 2025
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screens = document.querySelectorAll('.screen');
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const startButton = document.getElementById('startButton');
+            const prevScreenBtn = document.getElementById('prevScreenBtn');
+            const nextScreenBtn = document.getElementById('nextScreenBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const goToCaseAnalysisBtn = document.getElementById('goToCaseAnalysisBtn'); 
+
+            let currentScreenIndex = 0;
+
+            // Función para mostrar una pantalla específica con animación
+            function showScreen(index, direction = 'next') {
+                if (index < 0 || index >= screens.length) return;
+
+                // Ocultar la pantalla actual con animación de salida
+                const currentActiveScreen = document.querySelector('.screen.active');
+                if (currentActiveScreen) {
+                    if (direction === 'next') {
+                        currentActiveScreen.classList.add('exit-left');
+                    } else {
+                        currentActiveScreen.classList.add('exit-right');
+                    }
+                    currentActiveScreen.classList.remove('active');
+                    currentActiveScreen.style.zIndex = 5; // Ponerla detrás
+                    currentActiveScreen.style.pointerEvents = 'none';
+                }
+
+                // Dar un pequeño retraso para que la animación de salida se vea,
+                // antes de activar la nueva pantalla y sus botones.
+                setTimeout(() => {
+                    if (currentActiveScreen) {
+                        currentActiveScreen.classList.remove('exit-left', 'exit-right'); // Limpiar clases de salida
+                    }
+
+                    screens[index].classList.add('active');
+                    screens[index].style.zIndex = 10; // Ponerla al frente
+                    screens[index].style.pointerEvents = 'auto';
+
+                    currentScreenIndex = index;
+                    updateNavigationButtons(); // Actualizar botones después de que la nueva pantalla esté activa
+
+                    // Desplazamiento suave para asegurar que la tarjeta esté visible
+                    screens[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                }, 400); // Coincide con la duración de la transición CSS
+            }
+
+            // Función para actualizar el estado de los botones de navegación
+            function updateNavigationButtons() {
+                // Ocultar todos los botones de navegación por defecto
+                startButton.style.display = 'none';
+                prevScreenBtn.style.display = 'none';
+                nextScreenBtn.style.display = 'none';
+                restartBtn.style.display = 'none';
+                if (goToCaseAnalysisBtn) goToCaseAnalysisBtn.style.display = 'none'; 
+
+                if (currentScreenIndex === 0) { // Pantalla de bienvenida
+                    startButton.style.display = 'inline-flex';
+                } else if (currentScreenIndex === screens.length - 1) { // Última pantalla (Análisis de Caso: Marco Jurídico y Conclusión Final)
+                    prevScreenBtn.style.display = 'inline-flex';
+                    restartBtn.style.display = 'inline-flex';
+                } else if (currentScreenIndex === 5) { // Pantalla de Resumen (index 5)
+                    prevScreenBtn.style.display = 'inline-flex';
+                    goToCaseAnalysisBtn.style.display = 'inline-flex'; // Mostrar "Ir a Análisis de Caso"
+                }
+                else { // Todas las pantallas intermedias (incluyendo las de análisis de caso)
+                    prevScreenBtn.style.display = 'inline-flex';
+                    nextScreenBtn.style.display = 'inline-flex';
+                }
+            }
+
+            // Event Listeners
+            startButton.addEventListener('click', () => showScreen(1, 'next')); // Ir a Presupuestos generales
+            nextScreenBtn.addEventListener('click', () => showScreen(currentScreenIndex + 1, 'next'));
+            prevScreenBtn.addEventListener('click', () => showScreen(currentScreenIndex - 1, 'prev'));
+            restartBtn.addEventListener('click', () => showScreen(0, 'prev')); // Volver a la bienvenida
+
+            // Event Listener para el botón "Ir a Análisis de Caso"
+            if (goToCaseAnalysisBtn) {
+                goToCaseAnalysisBtn.addEventListener('click', () => {
+                    showScreen(6, 'next'); // Navega a la primera pantalla de Análisis de Caso (Datos Generales, que es el índice 6)
+                });
+            }
+
+            // Inicializar la primera pantalla y botones al cargar la página
+            welcomeScreen.classList.add('active');
+            updateNavigationButtons();
+        });
+    </script>
+</body>
+</html>
